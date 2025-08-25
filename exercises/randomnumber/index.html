@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<div id="tal"></div>
+		<button id="nyttal">Klik for nyt tal</button>
+		<div>
+			<input type="number" name="max" id="max" placeholder="Højeste tal" />
+			<input type="number" name="min" id="min" placeholder="Laveste tal" />
+			<button id="setrange">Sæt værdier</button>
+		</div>
+		<div>
+			<div id="rangeinfo"></div>
+			<input type="number" name="input" id="input" />
+		</div>
+		<div id="svar"></div>
+		<script src="randomnum.js"></script>
+	</body>
+	<style>
+		body {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			margin: auto;
+			gap: 2rem;
+			width: 200px;
+			height: 100vh;
+		}
+		div {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.korrekt {
+			animation: korrekt 1s ease-in-out infinite;
+		}
+
+		@keyframes korrekt {
+			0% {
+				background-color: white;
+			}
+			50% {
+				background-color: lightgreen;
+			}
+			100% {
+				background-color: white;
+				transform: rotate(360deg);
+			}
+		}
+	</style>
+</html>
