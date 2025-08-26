@@ -11,13 +11,14 @@ const svar = document.getElementById("svar");
 
 // Initialisering af variabler
 let num;
-let min = 1;
+let min = 0;
 let max = 100;
 
 // Funktion til at generere et tilfældigt tal mellem min og max
 function getRandomNum(min, max) {
 	/* 	num = Math.floor(Math.random() * max) + min; */
 	num = Math.floor(Math.random() * (max - min + 1)) + min;
+	/* 	tal.innerHTML = "Tilfædligt tal: " + num; */ //skal kun bruges hvis tallet skal vises
 	console.log("Tilfædligt tal: " + num);
 	input.value = ""; // Nulstiller input feltet
 	svar.innerHTML = ""; // Nulstiller svar beskeden
