@@ -5,7 +5,7 @@ console.log("Tilfædligt tal: " + num);
 document.body.innerHTML = "Tilfædligt tal: " + num; */
 
 // Henter HTML elementer
-const tal = document.getElementById("tal");
+/* const tal = document.getElementById("tal"); */ //skal kun bruges hvis tallet skal vises
 const input = document.getElementById("input");
 const svar = document.getElementById("svar");
 
