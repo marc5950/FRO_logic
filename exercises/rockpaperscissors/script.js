@@ -1,4 +1,3 @@
-const gamefield = document.getElementById("gamefield");
 const player = document.getElementById("player1");
 const computer = document.getElementById("player2");
 
@@ -13,6 +12,7 @@ const buttons = [rock, paper, scissors];
 const buttons2 = document.getElementById("buttons");
 console.log(buttons);
 
+// Spillets logik
 let playerChoice;
 let computerChoice;
 let result;
@@ -20,15 +20,17 @@ let result;
 player.classList.add("shake");
 computer.classList.add("shake");
 
+// Eventlisteners til knapperne
 buttons.forEach((button) =>
 	button.addEventListener("click", () => {
-		playerChoice = button.classList;
+		playerChoice = button.classList; // får fat i klassenavnet på knappen
 		console.log(playerChoice);
 		player.classList.remove("shake");
 		player.classList.add(playerChoice);
 		console.log("player " + player.classList);
 		computerTurn();
 		buttons2.classList.add("disabled");
+		// Pause før resultatet vises
 		setTimeout(() => {
 			buttons2.classList.remove("disabled");
 			getResult();
@@ -36,6 +38,7 @@ buttons.forEach((button) =>
 	})
 );
 
+// Computerens tur
 function computerTurn() {
 	const random = Math.floor(Math.random() * 3);
 	if (random === 0) {
@@ -50,6 +53,7 @@ function computerTurn() {
 	console.log("computer " + computer.classList);
 }
 
+// Bestemmer vinderen
 function getResult() {
 	if (playerChoice == computerChoice) {
 		result = "draw";
@@ -65,6 +69,7 @@ function getResult() {
 	showResult();
 }
 
+// Viser resultatet
 function showResult() {
 	if (result === "draw") {
 		draw.classList.remove("hidden");
@@ -78,6 +83,7 @@ function showResult() {
 	}, 2000);
 }
 
+// Nulstiller spillet
 function resetGame() {
 	player.classList.remove(playerChoice);
 	player.classList.add("shake");
