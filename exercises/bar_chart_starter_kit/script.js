@@ -41,6 +41,7 @@ function update() {
 	arr.forEach((num) => {
 		const li = document.createElement("li");
 		li.style.setProperty("--height", num);
+		// tilføj li elementet til listen som et barn til list (ul)
 		list.appendChild(li);
 	});
 	console.log(arr);
