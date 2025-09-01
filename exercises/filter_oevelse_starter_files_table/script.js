@@ -59,12 +59,12 @@ function showTheseVehicles(arr) {
 		}
 		if (!each.isElectric) {
 			each.isElectric = "Nej";
-		} else {
+		} else if (each.isElectric === true) {
 			each.isElectric = "Ja";
 		}
 		if (!each.isTandem) {
 			each.isTandem = "Nej";
-		} else {
+		} else if (each.isTandem === true) {
 			each.isTandem = "Ja";
 		}
 		tbodyPointer.innerHTML += `<tr>

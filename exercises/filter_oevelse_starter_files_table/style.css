@@ -1,40 +1,149 @@
+body {
+	background: linear-gradient(120deg, #1e3c72 0%, #2a5298 100%);
+	min-height: 100vh;
+	font-family: "Segoe UI", Arial, sans-serif;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+h2 {
+	color: #fff;
+	margin-top: 2rem;
+	font-size: 2rem;
+	letter-spacing: 2px;
+	animation: fadeInDown 0.8s;
+}
+
+#btns {
+	margin: 2rem 0 1rem 0;
+	display: flex;
+	gap: 1rem;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+button {
+	background: linear-gradient(90deg, #ff8c00 0%, #ff0080 100%);
+	color: #fff;
+	border: none;
+	border-radius: 12px;
+	padding: 0.7rem 1.5rem;
+	font-size: 1rem;
+	cursor: pointer;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+	transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+	animation: popIn 0.6s;
+	font-weight: 500;
+}
+
+button:hover {
+	transform: scale(1.08);
+	box-shadow: 0 6px 24px rgba(255, 0, 128, 0.15);
+	background: linear-gradient(90deg, #ff0080 0%, #ff8c00 100%);
+}
+
 table {
-    border-collapse: collapse;
-    border: 2px solid rgb(140 140 140);
-    font-family: sans-serif;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
+	border-collapse: collapse;
+	border-radius: 16px;
+	overflow: hidden;
+	box-shadow: 0 6px 32px rgba(30, 60, 114, 0.15);
+	font-family: inherit;
+	font-size: 1rem;
+	letter-spacing: 1px;
+	background: rgba(255, 255, 255, 0.95);
+	margin-bottom: 2rem;
+	animation: fadeInUp 0.8s;
 }
 
 caption {
-    caption-side: bottom;
-    padding: 10px;
-    font-weight: bold;
+	caption-side: bottom;
+	padding: 10px;
+	font-weight: bold;
+	color: #fff;
 }
 
 thead,
 tfoot {
-    background-color: rgb(228 240 245);
+	background-color: #e4f0f5;
 }
 
 th,
 td {
-    border: 1px solid rgb(160 160 160);
-    padding: 8px 10px;
+	border: 1px solid #b0b0b0;
+	padding: 10px 16px;
+	text-align: left;
 }
 
 td:last-of-type {
-    text-align: center;
+	text-align: center;
 }
 
-tbody>tr:nth-of-type(even) {
-    background-color: rgb(237 238 242);
+tbody > tr {
+	animation: rowFadeIn 0.5s;
+}
+
+tbody > tr:nth-of-type(even) {
+	background-color: #f3f6fa;
+}
+
+tbody > tr:nth-of-type(odd) {
+	background-color: #eaf0fa;
 }
 
 tfoot th {
-    text-align: right;
+	text-align: right;
 }
 
 tfoot td {
-    font-weight: bold;
+	font-weight: bold;
+}
+
+@keyframes fadeInDown {
+	from {
+		opacity: 0;
+		transform: translateY(-30px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(30px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes popIn {
+	0% {
+		opacity: 0;
+		transform: scale(0.7);
+	}
+	80% {
+		opacity: 1;
+		transform: scale(1.05);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+@keyframes rowFadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
