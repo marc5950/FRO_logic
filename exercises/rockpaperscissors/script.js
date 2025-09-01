@@ -2,7 +2,6 @@ const gamefield = document.getElementById("gamefield");
 const player = document.getElementById("player1");
 const computer = document.getElementById("player2");
 
-const text = document.getElementById("text");
 const lose = document.getElementById("lose");
 const win = document.getElementById("win");
 const draw = document.getElementById("draw");
