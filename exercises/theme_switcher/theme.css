@@ -1,0 +1,38 @@
+/* Globale variabler for light */
+:root {
+	--bg-color: #ffffff;
+	--text-color: #000000;
+	--header-color: #4caf50;
+	--header-bg-color: #f0f0f0;
+}
+
+/* Dark theme med attribut */
+body[data-theme="dark"] {
+	--bg-color: #121212;
+	--text-color: #f5f5f5;
+	--header-color: #bb86fc;
+	--header-bg-color: #1f1f1f;
+}
+
+body[data-theme="colorful"] {
+	--bg-color: #ff69b4;
+	--text-color: #0000ff;
+	--header-color: #ffff00;
+	--header-bg-color: #ffa500;
+}
+
+/* Brug variablerne */
+body {
+	background-color: var(--bg-color);
+	color: var(--text-color);
+	font-family: sans-serif;
+	text-align: center;
+	padding: 2rem;
+}
+header {
+	background-color: var(--header-bg-color);
+	color: var(--header-color);
+	padding: 1rem;
+	border-radius: 8px;
+	margin-bottom: 2rem;
+}
