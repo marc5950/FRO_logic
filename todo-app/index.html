@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Marcus' Todo App</title>
+		<link rel="stylesheet" href="styles.css" />
+		<script defer src="app.js"></script>
+	</head>
+	<body>
+		<header>
+			<h1>Marcus' Todo App</h1>
+		</header>
+		<div class="app-container">
+			<aside class="sidebar">
+				<nav>
+					<ul>
+						<li id="completed-btn"><a href="#">Færdige to-do's</a></li>
+						<li id="new-list-btn"><a href="#">Opret ny liste</a></li>
+					</ul>
+				</nav>
+				<span class="line"></span>
+				<div class="lists">
+					<!-- Todo lister vil blive tilføjet her via JavaScript -->
+				</div>
+			</aside>
+
+			<main class="main-content">
+				<div class="todo-wrapper">
+					<div class="todo-header">
+						<input type="text" placeholder="Tilføj ny ToDo" id="todo-input" />
+						<button class="add-btn" id="add-btn">+</button>
+					</div>
+					<div class="ekstra-bar">
+						<button id="add-date" class="ekstra-btn">📅 Dato</button>
+						<button id="add-amount" class="ekstra-btn">🔢 Antal</button>
+					</div>
+				</div>
+
+				<div class="todo-list" id="todo-list">
+					<!-- Todos vil blive tilføjet her via JavaScript -->
+				</div>
+			</main>
+		</div>
+	</body>
+</html>
