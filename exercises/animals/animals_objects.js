@@ -23,17 +23,17 @@ function prepareObjects(jsonData) {
 	jsonData.forEach((jsonObject) => {
 		// TODO: Create new object with cleaned data - and store that in the allAnimals array
 		const animal = { name: "NA", desc: "NA", type: "NA", age: 0 };
-		// const fullname = jsonObject.fullname;
-		// console.log(fullname);
+		/* const fullname = jsonObject.fullname;
+		console.log(fullname);
 
-		// const firstSpace = fullname.indexOf(" ");
-		// const secondSpace = fullname.indexOf(" ", firstSpace + 1);
-		// const lastSpace = fullname.lastIndexOf(" ");
+		const firstSpace = fullname.indexOf(" ");
+		const secondSpace = fullname.indexOf(" ", firstSpace + 1);
+		const lastSpace = fullname.lastIndexOf(" ");
 
-		// animal.name = fullname.substring(0, fullname.indexOf(" "));
-		// animal.desc = fullname.substring(secondSpace, lastSpace);
-		// animal.type = fullname.substring(lastSpace + 1);
-		// animal.age = jsonObject.age;
+		animal.name = fullname.substring(0, fullname.indexOf(" "));
+		animal.desc = fullname.substring(secondSpace, lastSpace);
+		animal.type = fullname.substring(lastSpace + 1);
+		animal.age = jsonObject.age; */
 
 		const fullName = jsonObject.fullname.split(" ");
 
