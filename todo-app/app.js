@@ -1,7 +1,12 @@
-let lists = []; // Holder styr på alle lister (ikke implementeret endnu)
-let todoList = JSON.parse(localStorage.getItem("todoList")) || [];
-let doneList = JSON.parse(localStorage.getItem("doneList")) || [];
-let editingTodoId = null; // Holder styr på hvilken todo der redigeres
+let lists = JSON.parse(localStorage.getItem("lists")) || {
+	default: {
+		todos: [],
+		done: [],
+	},
+};
+
+let currentList = "default";
+let editingTodoId = null;
 
 // Knapper i sidebar
 const completedBtn = document.getElementById("completed-btn");
@@ -26,7 +31,7 @@ completedBtn.addEventListener("click", () => {
 	completedBtn.classList.add("active");
 	newListBtn.classList.remove("active");
 	console.log("Viser færdige todos");
-	console.log("Nuværende doneList:", doneList);
+	console.log("Nuværende doneList:", lists[currentList].done);
 });
 homeBtn.addEventListener("click", () => {
 	todoListContainer.style.display = "block";
@@ -34,7 +39,7 @@ homeBtn.addEventListener("click", () => {
 	completedBtn.classList.remove("active");
 	newListBtn.classList.remove("active");
 	console.log("Viser alle todos");
-	console.log("Nuværende todoList:", todoList);
+	console.log("Nuværende todoList:", lists[currentList].todos);
 });
 
 // Functions
@@ -42,77 +47,56 @@ homeBtn.addEventListener("click", () => {
 // Tilføj eller redigér todo
 // Hvis vi er i redigeringsmode, så gem ændringerne
 // Ellers tilføj ny todo
+// Tilføj eller redigér todo
 function handleAddOrEdit() {
-	console.log("Add/Edit button clicked");
+	const text = todoInput.value.trim();
+	if (!text) return;
+
 	if (editingTodoId) {
-		// Hvis vi er i redigeringsmode, så gem ændringerne
-		const text = todoInput.value.trim();
-		if (text) {
-			const todo = todoList.find((t) => t.id === editingTodoId);
-			if (todo) {
-				// Slet den gamle todo
-				todoList = todoList.filter((t) => t.id !== editingTodoId);
-
-				// Opret ny todo med samme id men ny tekst
-				const updatedTodo = {
-					// ...todo tager alle properties fra den gamle todo
-					...todo,
-					text: text,
-					date: new Date().toISOString(), // Opdater dato
-				};
-				todoList.push(updatedTodo);
-
-				saveToStorage();
-				renderTodos();
-
-				// Reset redigering
-				editingTodoId = null;
-				todoInput.value = "";
-				addBtn.textContent = "+";
-				todoInput.placeholder = "Tilføj ny ToDo";
-			}
+		// Find og opdater eksisterende
+		let todo = lists[currentList].todos.find((t) => t.id === editingTodoId);
+		if (todo) {
+			todo.text = text.charAt(0).toUpperCase() + text.slice(1);
+			todo.date = new Date().toISOString();
 		}
+		editingTodoId = null;
+		console.log("Opdaterede todo med id:", todo.id);
 	} else {
-		// Tilføj ny todo
-		// Lav første bogstav stort
-		const text = todoInput.value.trim();
-		if (text) {
-			const todo = {
-				id: Date.now(),
-				text: text.charAt(0).toUpperCase() + text.slice(1),
-				completed: false,
-				date: new Date().toISOString(),
-			};
-			todoList.push(todo);
-			saveToStorage();
-			renderTodos();
-			todoInput.value = "";
-		}
+		// Opret ny
+		const todo = {
+			id: Date.now(),
+			text: text.charAt(0).toUpperCase() + text.slice(1),
+			completed: false,
+			date: new Date().toISOString(),
+		};
+		lists[currentList].todos.push(todo);
+		console.log("Tilføjede ny todo:", todo);
 	}
-	console.log("Todo List:", todoList);
+
+	todoInput.value = "";
+	addBtn.textContent = "+";
+	todoInput.placeholder = "Tilføj ny ToDo";
+	saveToStorage();
+	renderTodos();
+	console.log("Opdateret todoList:", lists[currentList].todos);
 }
 
-// Render todo liste
-// Tøm containeren
-// Loop gennem todoList arrayet
-// Opret et nyt DOM element for hver todo
-// Tilføj elementet til containeren
+// Render alle todos i den nuværende liste
 function renderTodos() {
-	todoListContainer.innerHTML = "";
-	todoList.forEach((todo) => {
-		const todoElement = createTodoElement(todo);
-		todoListContainer.appendChild(todoElement);
-		addBtn.textContent = "+";
-	});
-	console.log("Rendered todos. Current todoList:", todoList);
+	const { todos, done } = lists[currentList];
 
-	// Render done list
-	doneListContainer.innerHTML = "";
-	doneList.forEach((todo) => {
-		const todoElement = createTodoElement(todo);
-		doneListContainer.appendChild(todoElement);
+	// Todo-liste
+	todoListContainer.innerHTML = "";
+	todos.forEach((todo) => {
+		todoListContainer.appendChild(createTodoElement(todo));
 	});
-	console.log("Rendered done todos. Current doneList:", doneList);
+	console.log("Renderede todo liste:", todos);
+	// Done-liste
+	doneListContainer.innerHTML = "";
+	done.forEach((todo) => {
+		doneListContainer.appendChild(createTodoElement(todo));
+	});
+	console.log("Renderede done liste:", done);
 }
 
 function createTodoElement(todo) {
@@ -129,53 +113,48 @@ function createTodoElement(todo) {
 	return div;
 }
 
+// Skift mellem todo/done
 function handleToggleTodo(id) {
-	const todoInTodoList = todoList.find((t) => t.id === id);
-	const todoInDoneList = doneList.find((t) => t.id === id);
-
-	if (todoInTodoList) {
-		toggleTodoDone(id);
-	} else if (todoInDoneList) {
-		toggleTodoUndo(id);
-	}
-}
-
-function toggleTodoDone(id) {
-	const index = todoList.findIndex((t) => t.id === id);
-	if (index !== -1) {
-		const todo = todoList[index];
-		todoList.splice(index, 1);
+	const list = lists[currentList];
+	const todo = list.todos.find((t) => t.id === id);
+	if (todo) {
+		list.todos = list.todos.filter((t) => t.id !== id);
 		todo.completed = true;
-		doneList.push(todo);
-		saveToStorage();
-		renderTodos();
-		console.log("Completed todo:", todo);
+		list.done.push(todo);
+		console.log("Markerede todo som færdig:", todo);
+	} else {
+		const doneTodo = list.done.find((t) => t.id === id);
+		if (doneTodo) {
+			list.done = list.done.filter((t) => t.id !== id);
+			doneTodo.completed = false;
+			list.todos.push(doneTodo);
+			console.log("Markerede todo som ikke-færdig:", doneTodo);
+		}
 	}
-}
-
-function toggleTodoUndo(id) {
-	const index = doneList.findIndex((t) => t.id === id);
-	if (index !== -1) {
-		const todo = doneList[index];
-		doneList.splice(index, 1);
-		todo.completed = false;
-		todoList.push(todo);
-		saveToStorage();
-		renderTodos();
-		console.log("Undid todo:", todo);
-	}
+	saveToStorage();
+	renderTodos();
 }
 
 function deleteTodo(id) {
-	todoList = todoList.filter((t) => t.id !== id);
+	let list = lists[currentList];
+	list.todos = list.todos.filter((t) => t.id !== id);
+	list.done = list.done.filter((t) => t.id !== id);
+	if (editingTodoId === id) cancelEdit();
 	saveToStorage();
 	renderTodos();
-	console.log("Slettet todo:", id);
+	console.log("Slettet todo med id:", id);
+}
 
-	// Hvis vi sletter den todo vi redigerer, cancel redigering
-	if (editingTodoId === id) {
-		cancelEdit();
-		console.log("Annulleret redigering for slettet todo:", id);
+function editTodo(id) {
+	const list = lists[currentList];
+	const todo = list.todos.find((t) => t.id === id);
+	if (todo) {
+		editingTodoId = id;
+		todoInput.value = todo.text;
+		todoInput.focus();
+		addBtn.textContent = "✔";
+		todoInput.placeholder = "Redigér todo...";
+		console.log("Redigerer todo med id:", id);
 	}
 }
 
@@ -184,23 +163,12 @@ function cancelEdit() {
 	todoInput.value = "";
 	addBtn.textContent = "+";
 	todoInput.placeholder = "Tilføj ny ToDo";
-}
-
-function editTodo(id) {
-	const todo = todoList.find((t) => t.id === id);
-	if (todo) {
-		editingTodoId = id;
-		todoInput.value = todo.text;
-		todoInput.focus();
-		addBtn.textContent = "✔";
-		todoInput.placeholder = "Redigér todo...";
-		console.log("Redigerer todo:", todo);
-	}
+	console.log("Annulleret redigering");
 }
 
 function saveToStorage() {
-	localStorage.setItem("todoList", JSON.stringify(todoList));
-	localStorage.setItem("doneList", JSON.stringify(doneList));
+	localStorage.setItem("lists", JSON.stringify(lists));
+	console.log("Gemte lister til localStorage");
 }
 
 // Tilføj escape-key for at annullere redigering
