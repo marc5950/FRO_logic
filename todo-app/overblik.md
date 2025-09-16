@@ -1,5 +1,3 @@
-<!-- filepath: /Users/mw/Desktop/keammd/3sem/FRO_logic/todo-app/overblik.md -->
-
 ```mermaid
 graph TD
     A[App Start] --> B[Load Data from localStorage]
@@ -9,9 +7,9 @@ graph TD
 
     subgraph "Data Structure"
         F[lists Object]
-        F --> G[default: {name, todos[], done[]}]
-        F --> H[listId: {name, todos[], done[]}]
-        I[currentList = "default"]
+        F --> G[default: name, todos, done]
+        F --> H[listId: name, todos, done]
+        I[currentList = default]
         J[editingTodoId = null]
     end
 
@@ -37,7 +35,7 @@ graph TD
         BB --> CC[Switch to New List]
         CC --> Y
 
-        S --> DD[currentList = "default"]
+        S --> DD[currentList = default]
         DD --> EE[renderTodos + renderLists]
     end
 
