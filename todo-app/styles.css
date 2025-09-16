@@ -75,21 +75,96 @@ header button {
 	border-bottom: 1px solid var(--text-color);
 }
 
+.sidebar #lists {
+	display: flex;
+	flex-direction: column;
+}
+
 .sidebar .line {
 	display: block;
 	height: 2px;
 	background: var(--border-color);
 }
 
-.lists .list-item {
+/* Tilføjet styling til liste-knapper */
+.list-btn {
 	color: var(--muted-text-color);
+	background: none;
+	border: none;
+	text-align: left;
 	padding: 8px 0;
 	cursor: pointer;
 	margin-bottom: 10px;
+	font-size: 14px;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
-.lists .list-item:hover {
+.list-btn:hover {
 	color: var(--text-color);
+}
+
+.list-btn.active {
+	color: var(--text-color);
+	border-bottom: 1px solid var(--text-color);
+}
+
+/* Container for liste navn og slet knap */
+.list-item-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	padding: 8px 0;
+	margin-bottom: 10px;
+	border-bottom: 1px solid transparent;
+}
+
+.list-item-container:hover {
+	border-bottom: 1px solid var(--text-color);
+}
+
+.list-item-container.active {
+	border-bottom: 1px solid var(--text-color);
+}
+
+.list-name {
+	color: var(--muted-text-color);
+	cursor: pointer;
+	flex: 1;
+	font-size: 14px;
+}
+
+/* Ret dette - kun når container er hovered eller active */
+.list-item-container:hover .list-name {
+	color: var(--text-color);
+}
+
+.list-item-container.active .list-name {
+	color: var(--text-color);
+}
+
+.delete-list-btn {
+	background: none;
+	border: none;
+	color: var(--muted-text-color);
+	cursor: pointer;
+	font-size: 12px;
+	padding: 2px 5px;
+	margin-left: 10px;
+	opacity: 0;
+	transition: all 0.3s;
+}
+
+.list-item-container:hover .delete-list-btn {
+	opacity: 1;
+}
+
+.delete-list-btn:hover {
+	color: var(--secondary-color);
+	transform: scale(1.1);
 }
 
 .main-content {

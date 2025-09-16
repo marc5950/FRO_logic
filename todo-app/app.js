@@ -1,10 +1,17 @@
 // Hent data fra localStorage eller opret standard struktur
 let lists = JSON.parse(localStorage.getItem("lists")) || {
 	default: {
+		name: "Min Todo Liste", // Tilføjet navn til default liste
 		todos: [],
 		done: [],
 	},
 };
+
+// Sikr at default liste altid har et navn (for eksisterende data)
+if (!lists.default.name) {
+	lists.default.name = "Min Todo Liste";
+	localStorage.setItem("lists", JSON.stringify(lists));
+}
 
 let currentList = "default";
 let editingTodoId = null;
@@ -13,6 +20,7 @@ let editingTodoId = null;
 const completedBtn = document.getElementById("completed-btn");
 const newListBtn = document.getElementById("new-list-btn");
 const homeBtn = document.getElementById("home");
+const listsContainer = document.getElementById("lists"); // Tilføjet reference til lists div
 
 // DOM elementer
 const todoInput = document.getElementById("todo-input");
@@ -29,6 +37,9 @@ todoInput.addEventListener("keypress", (e) => {
 	if (e.key === "Enter") handleAddOrEdit();
 });
 
+// Tilføjet event listener til newListBtn
+newListBtn.addEventListener("click", createNewList);
+
 completedBtn.addEventListener("click", () => {
 	todoListContainer.style.display = "none";
 	doneListContainer.style.display = "block";
@@ -38,19 +49,128 @@ completedBtn.addEventListener("click", () => {
 	console.log("Nuværende doneList:", lists[currentList].done);
 });
 homeBtn.addEventListener("click", () => {
+	// Skift til default liste
+	currentList = "default";
+	renderTodos();
+	renderLists(); // Opdater active state i sidebar
+
+	// Vis todo-listen (ikke done-listen)
 	todoListContainer.style.display = "block";
 	doneListContainer.style.display = "none";
 	completedBtn.classList.remove("active");
 	newListBtn.classList.remove("active");
-	console.log("Viser alle todos");
+
+	console.log("Skiftede til default liste");
 	console.log("Nuværende todoList:", lists[currentList].todos);
 });
 
 // Functions
 
-// Tilføj eller redigér todo
-// Hvis vi er i redigeringsmode, så gem ændringerne
-// Ellers tilføj ny todo
+// Opret ny liste
+function createNewList() {
+	const listName = prompt("Indtast navn på ny liste:");
+	if (!listName || !listName.trim()) return;
+
+	const listId = crypto.randomUUID();
+	lists[listId] = {
+		name: listName.trim(),
+		todos: [],
+		done: [],
+	};
+
+	currentList = listId;
+	saveToStorage();
+	renderLists();
+	renderTodos();
+
+	// Vis todo-listen (ikke done-listen)
+	todoListContainer.style.display = "block";
+	doneListContainer.style.display = "none";
+	completedBtn.classList.remove("active");
+
+	console.log("Oprettede ny liste:", listName);
+}
+
+// Skift til en specifik liste
+function switchToList(listId) {
+	currentList = listId;
+	renderTodos();
+
+	// Vis todo-listen (ikke done-listen)
+	todoListContainer.style.display = "block";
+	doneListContainer.style.display = "none";
+	completedBtn.classList.remove("active");
+	newListBtn.classList.remove("active");
+
+	// Opdater active state for lister i sidebar
+	renderLists(); // Genrender lister for at opdatere active state
+
+	console.log("Skiftede til liste:", lists[listId].name);
+}
+
+// Render alle lister i sidebar
+function renderLists() {
+	if (!listsContainer) return; // Hvis lists div ikke findes
+
+	listsContainer.innerHTML = "";
+
+	Object.keys(lists).forEach((listId) => {
+		const listContainer = document.createElement("div");
+		listContainer.className = "list-item-container";
+
+		// Markér den aktuelle liste som aktiv
+		if (listId === currentList) {
+			listContainer.classList.add("active");
+		}
+
+		listContainer.innerHTML = `
+            <span class="list-name" onclick="switchToList('${listId}')">${lists[listId].name}</span>
+            ${listId !== "default" ? `<button class="delete-list-btn" onclick="deleteList('${listId}')" title="Slet liste">🗑️</button>` : ""}
+        `;
+
+		listsContainer.appendChild(listContainer);
+	});
+	console.log(
+		"Renderede lister i sidebar:",
+		Object.values(lists).map((l) => l.name)
+	);
+}
+
+// Funktion til at slette en liste
+function deleteList(listId) {
+	// Kan ikke slette default listen
+	if (listId === "default") {
+		alert("Du kan ikke slette standard listen!");
+		return;
+	}
+
+	// Bekræft sletning
+	const listName = lists[listId].name;
+	if (!confirm(`Er du sikker på at du vil slette listen "${listName}"?\n\nAlle todos i listen vil blive slettet permanent.`)) {
+		return;
+	}
+
+	// Slet listen
+	delete lists[listId];
+
+	// Hvis den slettede liste var den aktuelle, skift til default
+	if (currentList === listId) {
+		currentList = "default";
+		renderTodos();
+
+		// Vis todo-listen (ikke done-listen)
+		todoListContainer.style.display = "block";
+		doneListContainer.style.display = "none";
+		completedBtn.classList.remove("active");
+		newListBtn.classList.remove("active");
+	}
+
+	saveToStorage();
+	renderLists();
+
+	console.log("Slettede liste:", listName);
+}
+
 // Tilføj eller redigér todo
 function handleAddOrEdit() {
 	const text = todoInput.value.trim();
@@ -139,12 +259,12 @@ function createTodoElement(todo) {
 	div.innerHTML = `
         <div class="todo-checkbox ${todo.completed ? "completed" : ""}" onclick="handleToggleTodo('${todo.id}')"></div>
         <span class="todo-text ${todo.completed ? "completed" : ""}">${todo.text}</span>
-		<span class="todo-date" style="display:${hasBeforeDate ? "inline" : "none"}">Deadline ${formattedDate}</span>
-		<span id="devider" style="display:${hasBeforeDate && hasAmount ? "inline" : "none"}">|</span>
-		<span class="todo-amount" style="display:${hasAmount ? "inline" : "none"}">${todo.amount} stk.</span>
+        <span class="todo-date" style="display:${hasBeforeDate ? "inline" : "none"}">Deadline ${formattedDate}</span>
+        <span id="devider" style="display:${hasBeforeDate && hasAmount ? "inline" : "none"}">|</span>
+        <span class="todo-amount" style="display:${hasAmount ? "inline" : "none"}">${todo.amount} stk.</span>
         <div class="todo-actions">
-            <button class="edit-btn" onclick="editTodo(${todo.id})" style="display:${todo.completed ? "none" : "inline-block"}">✏️</button>
-            <button class="delete-btn" onclick="deleteTodo(${todo.id})">🗑️</button>
+            <button class="edit-btn" onclick="editTodo('${todo.id}')" style="display:${todo.completed ? "none" : "inline-block"}">✏️</button>
+            <button class="delete-btn" onclick="deleteTodo('${todo.id}')">🗑️</button>
         </div>
     `;
 	return div;
@@ -228,5 +348,6 @@ document.addEventListener("keydown", (e) => {
 });
 
 // Load på page load
+renderLists(); // Render lister først
 renderTodos();
 console.log("App er klar til brug.");
