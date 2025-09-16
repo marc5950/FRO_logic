@@ -70,7 +70,7 @@ function handleAddOrEdit() {
 	} else {
 		// Opret ny
 		const todo = {
-			id: Date.now(),
+			id: crypto.randomUUID(),
 			text: text.charAt(0).toUpperCase() + text.slice(1),
 			completed: false,
 			date: new Date().toISOString(),
@@ -137,7 +137,7 @@ function createTodoElement(todo) {
 	}
 
 	div.innerHTML = `
-        <div class="todo-checkbox ${todo.completed ? "completed" : ""}" onclick="handleToggleTodo(${todo.id})"></div>
+        <div class="todo-checkbox ${todo.completed ? "completed" : ""}" onclick="handleToggleTodo('${todo.id}')"></div>
         <span class="todo-text ${todo.completed ? "completed" : ""}">${todo.text}</span>
 		<span class="todo-date" style="display:${hasBeforeDate ? "inline" : "none"}">Deadline ${formattedDate}</span>
 		<span id="devider" style="display:${hasBeforeDate && hasAmount ? "inline" : "none"}">|</span>
