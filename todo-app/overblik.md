@@ -92,8 +92,6 @@ graph TD
     end
 
     HH --> HHH
-    QQ --> Y
-    RR --> Y
     SS --> Y
     UU --> Y
     ZZ --> Y
