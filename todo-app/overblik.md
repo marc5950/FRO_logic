@@ -1,3 +1,6 @@
+<!-- filepath: /Users/mw/Desktop/keammd/3sem/FRO_logic/todo-app/overblik.md -->
+
+```mermaid
 graph TD
     A[App Start] --> B[Load Data from localStorage]
     B --> C[Initialize DOM Elements]
@@ -90,8 +93,17 @@ graph TD
         Y --> MMM[localStorage.setItem]
     end
 
+    HH --> HHH
+    QQ --> Y
+    RR --> Y
+    SS --> Y
+    UU --> Y
+    ZZ --> Y
+    BBB --> Y
+
     style A fill:#e1f5fe
     style F fill:#f3e5f5
     style L fill:#e8f5e8
     style FF fill:#fff3e0
     style OO fill:#fce4ec
+```
