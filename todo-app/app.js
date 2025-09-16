@@ -1,3 +1,4 @@
+// Hent data fra localStorage eller opret standard struktur
 let lists = JSON.parse(localStorage.getItem("lists")) || {
 	default: {
 		todos: [],
@@ -18,6 +19,9 @@ const todoInput = document.getElementById("todo-input");
 const addBtn = document.getElementById("add-btn");
 const todoListContainer = document.getElementById("todo-list");
 const doneListContainer = document.getElementById("done-list");
+
+const addTodoBeforeDate = document.getElementById("add-date");
+const addTodoAmount = document.getElementById("add-amount");
 
 // Event listeners
 addBtn.addEventListener("click", handleAddOrEdit);
@@ -58,6 +62,8 @@ function handleAddOrEdit() {
 		if (todo) {
 			todo.text = text.charAt(0).toUpperCase() + text.slice(1);
 			todo.date = new Date().toISOString();
+			todo.amount = addTodoAmount.value || "";
+			todo.beforeDate = addTodoBeforeDate.value || "";
 		}
 		editingTodoId = null;
 		console.log("Opdaterede todo med id:", todo.id);
@@ -68,18 +74,33 @@ function handleAddOrEdit() {
 			text: text.charAt(0).toUpperCase() + text.slice(1),
 			completed: false,
 			date: new Date().toISOString(),
+			amount: addTodoAmount.value || "",
+			beforeDate: addTodoBeforeDate.value || "",
 		};
+		// Tilføj ny todo til listen
 		lists[currentList].todos.push(todo);
 		console.log("Tilføjede ny todo:", todo);
 	}
 
+	// Nulstil input felter
 	todoInput.value = "";
 	addBtn.textContent = "+";
+	addTodoBeforeDate.value = "";
+	addTodoAmount.value = "";
 	todoInput.placeholder = "Tilføj ny ToDo";
 	saveToStorage();
 	renderTodos();
 	console.log("Opdateret todoList:", lists[currentList].todos);
 }
+
+//Lyt til ændringer i dato og antal felter og gem værdierne til createTodoElement funktionen
+addTodoBeforeDate.addEventListener("change", () => {
+	console.log("Valgt dato:", addTodoBeforeDate.value);
+});
+
+addTodoAmount.addEventListener("input", () => {
+	console.log("Indtastet antal:", addTodoAmount.value);
+});
 
 // Render alle todos i den nuværende liste
 function renderTodos() {
@@ -99,14 +120,30 @@ function renderTodos() {
 	console.log("Renderede done liste:", done);
 }
 
+// Opret et DOM element for en todo
 function createTodoElement(todo) {
 	const div = document.createElement("div");
 	div.className = "todo-item";
+
+	// Tjek om beforeDate og amount har værdier (ikke tom eller kun mellemrum)
+	const hasBeforeDate = todo.beforeDate && todo.beforeDate.trim() !== "";
+	const hasAmount = todo.amount && todo.amount.trim() !== "";
+
+	// Formater dato fra yyyy-mm-dd til dd-mm-yyyy
+	let formattedDate = todo.beforeDate;
+	const dateParts = todo.beforeDate.split("-");
+	if (dateParts.length === 3) {
+		formattedDate = `${dateParts[2]}/${dateParts[1]}-${dateParts[0]}`;
+	}
+
 	div.innerHTML = `
         <div class="todo-checkbox ${todo.completed ? "completed" : ""}" onclick="handleToggleTodo(${todo.id})"></div>
         <span class="todo-text ${todo.completed ? "completed" : ""}">${todo.text}</span>
+		<span class="todo-date" style="display:${hasBeforeDate ? "inline" : "none"}">Deadline ${formattedDate}</span>
+		<span id="devider" style="display:${hasBeforeDate && hasAmount ? "inline" : "none"}">|</span>
+		<span class="todo-amount" style="display:${hasAmount ? "inline" : "none"}">${todo.amount} stk.</span>
         <div class="todo-actions">
-            <button class="edit-btn" onclick="editTodo(${todo.id})">✏️</button>
+            <button class="edit-btn" onclick="editTodo(${todo.id})" style="display:${todo.completed ? "none" : "inline-block"}">✏️</button>
             <button class="delete-btn" onclick="deleteTodo(${todo.id})">🗑️</button>
         </div>
     `;
@@ -115,14 +152,21 @@ function createTodoElement(todo) {
 
 // Skift mellem todo/done
 function handleToggleTodo(id) {
+	// Find todo i den nuværende liste
 	const list = lists[currentList];
+	// Find todo i todos array
 	const todo = list.todos.find((t) => t.id === id);
+
 	if (todo) {
+		// Flyt todo til done listen
+		// Fjern fra todos array
 		list.todos = list.todos.filter((t) => t.id !== id);
 		todo.completed = true;
 		list.done.push(todo);
 		console.log("Markerede todo som færdig:", todo);
-	} else {
+	}
+	// Hvis ikke fundet, prøv at finde i done array
+	else {
 		const doneTodo = list.done.find((t) => t.id === id);
 		if (doneTodo) {
 			list.done = list.done.filter((t) => t.id !== id);
@@ -152,6 +196,8 @@ function editTodo(id) {
 		editingTodoId = id;
 		todoInput.value = todo.text;
 		todoInput.focus();
+		addTodoBeforeDate.value = todo.beforeDate;
+		addTodoAmount.value = todo.amount;
 		addBtn.textContent = "✔";
 		todoInput.placeholder = "Redigér todo...";
 		console.log("Redigerer todo med id:", id);
@@ -163,6 +209,8 @@ function cancelEdit() {
 	todoInput.value = "";
 	addBtn.textContent = "+";
 	todoInput.placeholder = "Tilføj ny ToDo";
+	addTodoBeforeDate.value = "";
+	addTodoAmount.value = "";
 	console.log("Annulleret redigering");
 }
 
