@@ -40,6 +40,8 @@ todoInput.addEventListener("keypress", (e) => {
 // Tilføjet event listener til newListBtn
 newListBtn.addEventListener("click", createNewList);
 
+// Tilføjet event listener til completedBtn og homeBtn
+// Skift visning mellem todo og done lister
 completedBtn.addEventListener("click", () => {
 	todoListContainer.style.display = "none";
 	doneListContainer.style.display = "block";
@@ -224,6 +226,7 @@ addTodoAmount.addEventListener("input", () => {
 
 // Render alle todos i den nuværende liste
 function renderTodos() {
+	// Hent todos og done fra den nuværende liste
 	const { todos, done } = lists[currentList];
 
 	// Todo-liste
@@ -299,8 +302,14 @@ function handleToggleTodo(id) {
 	renderTodos();
 }
 
+// Slet en todo
 function deleteTodo(id) {
+	// Find og fjern todo fra den nuværende liste
 	let list = lists[currentList];
+	// filter gør at vi fjerner todo med matching id
+	// tager alle todos der ikke matcher id'et
+	// og laver et nyt array med dem
+	// altså fjerner vi todo med det id
 	list.todos = list.todos.filter((t) => t.id !== id);
 	list.done = list.done.filter((t) => t.id !== id);
 	if (editingTodoId === id) cancelEdit();
