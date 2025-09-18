@@ -254,9 +254,11 @@ function createTodoElement(todo) {
 
 	// Formater dato fra yyyy-mm-dd til dd-mm-yyyy
 	let formattedDate = todo.beforeDate;
-	const dateParts = todo.beforeDate.split("-");
-	if (dateParts.length === 3) {
-		formattedDate = `${dateParts[2]}/${dateParts[1]}-${dateParts[0]}`;
+	if (hasBeforeDate) {
+		const dateParts = todo.beforeDate.split("-");
+		if (dateParts.length === 3) {
+			formattedDate = `${dateParts[2]}/${dateParts[1]}-${dateParts[0]}`;
+		}
 	}
 
 	div.innerHTML = `
